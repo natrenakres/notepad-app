@@ -11,7 +11,7 @@ export class NotesService {
 
   constructor(private storage: Storage) {}
 
-  load(): Promise<boolean> {
+  load(): Promise<Note[]> {
     return new Promise(resolve => {
       this.storage.get("notes").then(notes => {
         if (notes != null) {
@@ -19,27 +19,29 @@ export class NotesService {
         }
 
         this.loaded = true;
-        resolve(true);
+        resolve(notes);
       });
     });
   }
 
-  save(): void {
-    this.storage.set("notes", this.notes);
+
+  save(notes: Note[]): void {
+    this.storage.set("notes", notes);
   }
 
   getNote(id): Note {
     return this.notes.find(x => x.id === id);
   }
 
-  createNote(title): void {
+  createNote(title): Note {
     const id = Math.max(...this.notes.map(x => parseInt(x.id)), 0) + 1;
-    this.notes.push({
+    const n: Note = {
       id: id.toString(),
       title: title,
       content: ""
-    });
-    this.save();
+    };
+
+    return n;
   }
 
   deleteNote(note: Note): void {
@@ -47,7 +49,6 @@ export class NotesService {
 
     if (index > -1) {
       this.notes.splice(index, 1);
-      this.save();
     }
   }
 }

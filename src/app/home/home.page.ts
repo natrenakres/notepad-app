@@ -1,6 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { AlertController, NavController } from "@ionic/angular";
-import { NotesService } from "../services/notes.service";
+import { Store, Select } from "@ngxs/store";
+import {CreateNote, SaveNote} from "../actions/note.actions";
+import { Observable } from "rxjs";
+import { Note } from "../interfaces/note";
+import { NoteState } from "../state/note.state";
 
 @Component({
   selector: "app-home",
@@ -8,15 +12,16 @@ import { NotesService } from "../services/notes.service";
   styleUrls: ["home.page.scss"]
 })
 export class HomePage implements OnInit {
+  @Select(NoteState.getNotes)
+  notes$: Observable<Note>;
+
   constructor(
     private alertCtrl: AlertController,
     private navCtrl: NavController,
-    public noteService: NotesService
+    private store: Store
   ) {}
 
-  ngOnInit(): void {
-    this.noteService.load();
-  }
+  ngOnInit(): void {}
 
   addNote() {
     this.alertCtrl
@@ -36,8 +41,9 @@ export class HomePage implements OnInit {
           {
             text: "Save",
             handler: data => {
-              this.noteService.createNote(data.title);
-              this.noteService.load();
+              this.store.dispatch(
+                  new CreateNote(data.title)
+              );
             }
           }
         ]
