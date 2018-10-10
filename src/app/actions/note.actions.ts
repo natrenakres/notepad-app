@@ -1,4 +1,4 @@
-import {Note} from "../interfaces/note";
+import { Note } from "../interfaces/note";
 
 export class CreateNote {
   static readonly type = "[Note] Create Note";
@@ -10,10 +10,19 @@ export class SaveNote {
   constructor() {}
 }
 
+export class UpdateNote {
+  static readonly type = "[Note] Update Note";
+  constructor(public payload: Note) {}
+}
+
+export class DeleteNote {
+  static readonly type = "[Note] Delete Note";
+  constructor(public payload: Note) {}
+}
 
 export class GetNote {
   static readonly type = "[Note] get Note";
-  constructor(public payload: number) {}
+  constructor(public payload: string) {}
 }
 
 export class InitNoteState {
